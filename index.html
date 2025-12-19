@@ -1,402 +1,332 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Interactive Birthday Letter</title>
-    <style>
-      /* --- BODY & BACKGROUND --- */
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: "Poppins", sans-serif;
-        background: url('backgroudimage1.png')center/cover no-repeat
-          fixed;
-        overflow: hidden;
-      }
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Birthday Letter</title>
 
-      /* --- PASSKEY SCREEN --- */
-      #lockScreen {
-        position: fixed; 
-        inset: 0;
-        background: rgba(175, 170, 170, 0.85);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        z-index: 100;
-        transition: all 0.5s ease;
-      }
-      #passkey {
-        padding: 12px 15px;
-        border-radius: 10px;
-        border: none;
-        margin-top: 15px;
-        width: 200px;
-        font-size: 16px;
-        outline: none;
-        background: rgba(255, 255, 255, 0.9);
-        color: #d62828;
-        transition: all 0.3s ease;
-      }
-      #passkey:focus {
-        transform: scale(1.05);
-        box-shadow: 0 0 12px #702a2a;
-      }
-      #unlockBtn {
-        margin-top: 15px;
-        padding: 12px 25px;
-        border: none;
-        border-radius: 12px;
-        background: #fff;
-        color: #d62828;
-        font-weight: bold;
-        cursor: pointer;
-        box-shadow: 0 4px 10px rgba(126, 52, 52, 0.4);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-      }
-      #unlockBtn:hover {
-        transform: scale(1.1);
-        box-shadow: 0 0 20px #fff;
-      }
+<style>
+/* --- BODY & BACKGROUND --- */
+body{
+  margin:0;
+  padding:0;
+  font-family:"Poppins",sans-serif;
+  background:url('backgroundimage1.png') center/cover no-repeat fixed;
+  overflow:hidden;
+}
 
-      /* --- CONTAINER --- */
-      .container {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-        display: none;
-      }
+/* --- PASSKEY SCREEN --- */
+#lockScreen{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.85);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  z-index:100;
+}
+#passkey{
+  padding:12px;
+  border-radius:10px;
+  border:none;
+  width:200px;
+  margin-top:15px;
+}
+#unlockBtn{
+  margin-top:15px;
+  padding:12px 25px;
+  border:none;
+  border-radius:12px;
+  background:white;
+  color:#d62828;
+  font-weight:bold;
+  cursor:pointer;
+}
 
-      /* --- ENVELOPE --- */
-      .envelope {
-        width: 260px;
-        height: 180px;
-        background: #d62828;
-        position: relative;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-        transition: transform 0.5s ease;
-        z-index: 1;
-      }
-      .envelope:hover {
-        transform: scale(1.05);
-      }
+/* --- CONTAINER --- */
+.container{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  display:none;
+}
 
-      /* Envelope Flap */
-      .flap {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: #b21f1f;
-        clip-path: polygon(0 0, 100% 0, 50% 50%);
-        transform-origin: top;
-        transition: transform 1s ease-in-out;
-        z-index: 2;
-      }
+/* --- ENVELOPE --- */
+.envelope{
+  width:260px;
+  height:180px;
+  background:#d62828;
+  position:relative;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 8px 20px rgba(0,0,0,0.5);
+}
+.flap{
+  position:absolute;
+  top:0;
+  width:100%;
+  height:100%;
+  background:#b21f1f;
+  clip-path:polygon(0 0,100% 0,50% 50%);
+  transform-origin:top;
+  transition:1s;
+}
 
-      /* --- OPEN BUTTON --- */
-      .open-btn {
-        position: absolute;
-        top: calc(50% + 60px);
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 10px 20px;
-        border-radius: 25px;
-        border: none;
-        background: #fff;
-        color: #d62828;
-        font-weight: bold;
-        font-size: 15px;
-        cursor: pointer;
-        z-index: 5;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-        animation: btnBounce 1.5s infinite;
-        transition: all 0.3s ease;
-      }
-      .open-btn:hover {
-        transform: translateX(-50%) scale(1.1);
-        box-shadow: 0 0 15px #fff;
-      }
-      @keyframes btnBounce {
-        0%,
-        100% {
-          transform: translateX(-50%) translateY(0);
-        }
-        50% {
-          transform: translateX(-50%) translateY(-6px);
-        }
-      }
+/* --- OPEN BUTTON --- */
+.open-btn{
+  margin-top:15px;
+  padding:10px 20px;
+  border-radius:25px;
+  border:none;
+  background:white;
+  color:#d62828;
+  font-weight:bold;
+  cursor:pointer;
+  animation:bounce 1.5s infinite;
+}
+@keyframes bounce{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-6px);}
+}
 
-      /* --- LETTER --- */
-      .letter {
-        width: 220px;
-        max-height: 300px;
-        background: white;
-        padding: 15px;
-        border-radius: 8px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, 40px);
-        opacity: 0;
-        overflow-y: auto;
-        text-align: center;
-        font-size: 14px;
-        line-height: 1.5;
-        z-index: 4;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-        transition: all 0.5s ease;
-      }
+/* --- LETTER --- */
+.letter{
+  width:220px;
+  max-height:300px;
+  background:white;
+  padding:15px;
+  border-radius:8px;
+  position:absolute;
+  left:50%;
+  transform:translate(-50%,40px);
+  opacity:0;
+  overflow-y:auto;
+  transition:0.5s;
+}
+.letter.show{
+  opacity:1;
+  transform:translate(-50%,-250px);
+}
+.letter img{
+  width:100%;
+  border-radius:8px;
+}
 
-      /* Letter show animation */
-      .letter.show {
-        opacity: 1;
-        transform: translate(-50%, -250px);
-        animation: letterPop 1s ease-out;
-      }
-      @keyframes letterPop {
-        0% {
-          transform: translate(-50%, 40px);
-        }
-        50% {
-          transform: translate(-50%, -270px);
-        }
-        70% {
-          transform: translate(-50%, -230px);
-        }
-        100% {
-          transform: translate(-50%, -250px);
-        }
-      }
+/* --- BUTTONS --- */
+.reply-btn, .wa-btn{
+  margin-top:10px;
+  padding:10px 20px;
+  border-radius:25px;
+  border:2px solid white;
+  background:transparent;
+  color:white;
+  cursor:pointer;
+  display:none;
+}
 
-      /* --- IMAGE INSIDE LETTER --- */
-      .letter img {
-        width: 100%;
-        border-radius: 8px;
-        margin-bottom: 10px;
-        animation: bounce 1.5s infinite;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      }
-      @keyframes bounce {
-        0%,
-        100% {
-          transform: translateY(0);
-        }
-        50% {
-          transform: translateY(-10px);
-        }
-      }
+/* --- EMOJIS --- */
+.emoji{
+  position:fixed;
+  font-size:28px;
+  animation:pop 2s forwards;
+}
+@keyframes pop{
+  0%{opacity:1; transform:scale(0);}
+  100%{opacity:0; transform:scale(1.5) translateY(-150px);}
+}
 
-      /* --- EMOJIS --- */
-      .emoji {
-        position: fixed;
-        font-size: 30px;
-        animation: pop 2s ease forwards;
-      }
-      @keyframes pop {
-        0% {
-          opacity: 1;
-          transform: scale(0) translateY(0);
-        }
-        80% {
-          opacity: 0.9;
-          transform: scale(1.4) translateY(-120px);
-        }
-        100% {
-          opacity: 0;
-          transform: scale(0.3) translateY(-200px);
-        }
-      }
+/* --- CONFETTI --- */
+.confetti{
+  position:fixed;
+  font-size:22px;
+  animation:fall 3s linear forwards;
+}
+@keyframes fall{
+  from{transform:translateY(0);}
+  to{transform:translateY(100vh) rotate(360deg);}
+}
 
-      /* --- BUTTONS --- */
-      .reply-btn,
-      .wa-btn {
-        margin-top: 15px;
-        font-size: 16px;
-        padding: 10px 20px;
-        border-radius: 25px;
-        border: 2px solid white;
-        background: transparent;
-        color: white;
-        cursor: pointer;
-        animation: glow 1.5s infinite;
-        display: none;
-        transition: all 0.3s ease;
-      }
-      .reply-btn:hover,
-      .wa-btn:hover {
-        transform: scale(1.05);
-      }
-      @keyframes glow {
-        0% {
-          box-shadow: 0 0 5px white;
-        }
-        50% {
-          box-shadow: 0 0 15px white;
-        }
-        100% {
-          box-shadow: 0 0 5px white;
-        }
-      }
+/* ================= COMMENTS ================= */
+.comments-section{
+  margin-top:30px;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(8px);
+  padding:20px;
+  border-radius:15px;
+  width:280px;
+  color:white;
+}
 
-      /* --- CONFETTI & HEARTS --- */
-      .confetti,
-      .heart {
-        position: fixed;
-        font-size: 24px;
-        pointer-events: none;
-        animation: fall 3s linear forwards;
-      }
-      @keyframes fall {
-        0% {
-          transform: translateY(0) rotate(0deg);
-        }
-        100% {
-          transform: translateY(100vh) rotate(360deg);
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- BACKGROUND MUSIC -->
-    <audio
-      id="bgMusic"
-      src="music.mp3"
-      loop
-    ></audio>
+.comments-section h3{
+  margin-bottom:10px;
+}
 
-    <!-- PASSKEY SCREEN -->
-    <div id="lockScreen">
-      <h2>Enter Passkey to Open Letter 💘</h2>
-      <input id="passkey" type="password" placeholder="Enter passkey" />
-      <button id="unlockBtn" onclick="unlock()">Unlock</button>
-      <p>Hint ❤: LOVE</p>
-    </div>
+.comments-section input,
+.comments-section textarea{
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  margin-bottom:10px;
+}
 
-    <div class="container" id="container">
-      <div class="envelope">
-        <div class="flap" id="flap"></div>
-      </div>
+.comments-section textarea{
+  resize:none;
+  height:70px;
+}
 
-      <button class="open-btn" id="openBtn" onclick="openLetter()">
-        Open 🎁
-      </button>
+.comments-section button{
+  width:100%;
+  padding:10px;
+  border-radius:20px;
+  border:none;
+  background:white;
+  color:#d62828;
+  font-weight:bold;
+  cursor:pointer;
+}
 
-      <div class="letter" id="letter">
-        <!-- Birthday wisher image -->
-        <img src="picture.png" alt="Happy Birthday Sir!" />
-        <p id="typedText"></p>
-      </div>
+#commentsList{
+  margin-top:15px;
+  max-height:200px;
+  overflow-y:auto;
+}
 
-      <button class="reply-btn" id="reply" onclick="resetEnvelope()">
-        Replay 💌
-      </button>
-      <button class="wa-btn" id="waShare" onclick="shareWhatsApp()">
-        Share on WhatsApp 💬
-      </button>
-    </div>
+.comment{
+  background:white;
+  color:#333;
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+.comment strong{color:#d62828;}
+</style>
+</head>
 
-    <script>
-      let opened = false;
-      let emojisInterval, confettiInterval;
-      let msg = `Happy Birthday Sir 🎉🎂,  
-Happy Birthday sir ! Today I celebrate a man whose kindness has changed my life. Thank you for being more than just a brother-in-law – you have been a father, a friend, and a strong support to me.
+<body>
 
-From clothing me, sponsoring me, and always caring for me like your own, I do not take any of it for granted. I pray that God will bless you beyond measure. May He reward every sacrifice you’ve made, grant you long life, good health, peace of mind, and unlimited breakthroughs.
+<audio id="bgMusic" src="music.mp3" loop></audio>
 
-As you add another year, may the doors of favor, prosperity, joy and divine protection open wide for you and your household. May God continue to elevate you.
+<!-- PASSKEY -->
+<div id="lockScreen">
+  <h2>Enter Passkey 💘</h2>
+  <input id="passkey" type="password">
+  <button id="unlockBtn" onclick="unlock()">Unlock</button>
+  <p>Hint ❤: LOVE</p>
+</div>
 
-I appreciate you deeply. Thank you for everything you have done for me.
+<div class="container" id="container">
 
-Happy Birthday once again sir. Enjoy your special day! 🎉🎂❤.  
+  <div class="envelope">
+    <div class="flap" id="flap"></div>
+  </div>
 
-Happy Birthday once again 🎉💙`;
+  <button class="open-btn" id="openBtn" onclick="openLetter()">Open 🎁</button>
 
-      let index = 0;
+  <div class="letter" id="letter">
+    <img src="picture.png">
+    <p id="typedText"></p>
+  </div>
 
-      function unlock() {
-        let key = document.getElementById("passkey").value;
-        if (key === "LOVE") {
-          document.getElementById("lockScreen").style.display = "none";
-          document.getElementById("container").style.display = "block";
-          document
-            .getElementById("bgMusic")
-            .play()
-            .catch(() => {});
-        } else alert("Wrong passkey ❌ Try again.");
-      }
+  <button class="reply-btn" id="reply" onclick="location.reload()">Replay 💌</button>
+  <button class="wa-btn" id="waShare" onclick="shareWhatsApp()">Share WhatsApp 💬</button>
 
-      function openLetter() {
-        if (opened) return;
-        opened = true;
+  <!-- COMMENTS -->
+  <div class="comments-section">
+    <h3>🎂 Birthday Wishes</h3>
+    <input type="text" id="userName" placeholder="Your name">
+    <textarea id="userComment" placeholder="Write your wish..."></textarea>
+    <button onclick="addComment()">Send Wish 💖</button>
+    <div id="commentsList"></div>
+  </div>
 
-        document.getElementById("flap").style.transform = "rotateX(180deg)";
-        document.getElementById("openBtn").style.display = "none";
+</div>
 
-        setTimeout(() => {
-          document.getElementById("letter").classList.add("show");
-          typeWriter();
-          document.getElementById("reply").style.display = "inline-block";
-          document.getElementById("waShare").style.display = "inline-block";
+<script>
+let opened=false;
+let msg=`Dear Big Brother,
+Happy Birthday sir! 🎉💙
+Thank you for everything.
+May God bless you with long life, peace and success.`;
+let index=0;
 
-          // Emoji pop
-          emojisInterval = setInterval(burstEmojis, 600);
-          // Confetti + hearts
-          confettiInterval = setInterval(burstConfetti, 300);
-        }, 500);
-      }
+function unlock(){
+  if(passkey.value==="LOVE"){
+    lockScreen.style.display="none";
+    container.style.display="block";
+    bgMusic.play().catch(()=>{});
+  } else alert("Wrong passkey ❌");
+}
 
-      function burstEmojis() {
-        let emojis = ["🎉", "💙", "🥳", "🎊", "✨", "💫", "🎂"];
-        let emoji = document.createElement("div");
-        emoji.className = "emoji";
-        emoji.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
-        emoji.style.left = Math.random() * window.innerWidth + "px";
-        emoji.style.pngtop = window.innerHeight + "px";
-        document.body.appendChild(emoji);
-        setTimeout(() => emoji.remove(), 3000);
-      }
+function openLetter(){
+  if(opened) return;
+  opened=true;
 
-      function burstConfetti() {
-        let elements = ["🎊", "💖", "✨"];
-        let confetti = document.createElement("div");
-        confetti.className = Math.random() > 0.5 ? "confetti" : "heart";
-        confetti.innerHTML =
-          elements[Math.floor(Math.random() * elements.length)];
-        confetti.style.left = Math.random() * window.innerWidth + "px";
-        confetti.style.top = "-30px";
-        document.body.appendChild(confetti);
-        setTimeout(() => confetti.remove(), 3000);
-      }
+  flap.style.transform="rotateX(180deg)";
+  openBtn.style.display="none";
 
-      function typeWriter() {
-        if (index < msg.length) {
-          document.getElementById("typedText").innerHTML += msg.charAt(index);
-          index++;
-          document.getElementById("letter").scrollTop =
-            document.getElementById("letter").scrollHeight;
-          setTimeout(typeWriter, 45);
-        }
-      }
+  setTimeout(()=>{
+    letter.classList.add("show");
+    reply.style.display="inline-block";
+    waShare.style.display="inline-block";
+    typeWriter();
+    setInterval(burstEmojis,600);
+    setInterval(burstConfetti,300);
+  },500);
+}
 
-      function shareWhatsApp() {
-        let text = encodeURIComponent(
-          "Happy Birthday! 🎉💙 I made something special for you. Open this link:"
-        );
-        let url = encodeURIComponent(window.location.href);
-        window.open("https://wa.me/?text=" + text + "%20" + url, "_blank");
-      }
+function typeWriter(){
+  if(index<msg.length){
+    typedText.innerHTML+=msg.charAt(index++);
+    setTimeout(typeWriter,45);
+  }
+}
 
-      function resetEnvelope() {
-        location.reload();
-      }
-    </script>
-  </body>
+function burstEmojis(){
+  let e=["🎉","💙","🥳","🎂"];
+  let d=document.createElement("div");
+  d.className="emoji";
+  d.innerHTML=e[Math.floor(Math.random()*e.length)];
+  d.style.left=Math.random()*window.innerWidth+"px";
+  d.style.top=window.innerHeight+"px";
+  document.body.appendChild(d);
+  setTimeout(()=>d.remove(),2000);
+}
+
+function burstConfetti(){
+  let c=document.createElement("div");
+  c.className="confetti";
+  c.innerHTML="🎊";
+  c.style.left=Math.random()*window.innerWidth+"px";
+  c.style.top="-20px";
+  document.body.appendChild(c);
+  setTimeout(()=>c.remove(),3000);
+}
+
+function addComment(){
+  let n=userName.value.trim();
+  let t=userComment.value.trim();
+  if(!n||!t) return alert("Fill all fields ❤");
+
+  let d=document.createElement("div");
+  d.className="comment";
+  d.innerHTML=<strong>${n}</strong><br>${t};
+  commentsList.prepend(d);
+
+  userName.value="";
+  userComment.value="";
+}
+
+function shareWhatsApp(){
+  let text=encodeURIComponent("Happy Birthday 🎉💙 Check this out:");
+  let url=encodeURIComponent(location.href);
+  window.open("https://wa.me/?text="+text+" "+url,"_blank");
+}
+</script>
+
+</body>
 </html>
